@@ -13,8 +13,8 @@ Then make a table **notes**
 
 ```
 CREATE TABLE notes (id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-								created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-								note TEXT);
+created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+note TEXT);
 ```
 
 
