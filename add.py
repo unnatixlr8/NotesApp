@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk 
+from tkinter import messagebox
 import mysql.connector
 from mysql.connector import Error
 
@@ -30,10 +31,12 @@ class NotesWindow():
 			cursor.execute("INSERT INTO notes(note) VALUES('%s')" %(noteToPost))
 			conn.commit()
 			print("Note Added")
+			messagebox.showinfo("Success", "Your note has been posted")
 
 		except mysql.connector.Error as error :
 			conn.rollback()
 			print("Error")
+			messagebox.showerror("Error", "You note has NOT been posted")
 
 		finally:
 			cursor.close()
