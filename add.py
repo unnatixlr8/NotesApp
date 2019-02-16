@@ -18,11 +18,11 @@ class NotesWindow():
 		global textBox
 		textBox = Text(master,highlightbackground="Black",font=("Verdana",14))
 		textBox.pack()
-		addButton = ttk.Button(master, text="Save Note")
+		addButton = ttk.Button(master, text="Save Note", command=self.uploadNote)
 		addButton.pack(pady=5,ipadx=10,ipady=5)
-		addButton.bind("<Button-1>",self.uploadNote)
+		#addButton.bind("<Button-1>",self.uploadNote)
 
-	def uploadNote(self,event):
+	def uploadNote(self):
 		noteToPost = textBox.get(1.0, "end-1c")
 		try:
 			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
