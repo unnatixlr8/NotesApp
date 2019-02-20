@@ -35,7 +35,7 @@ class ViewWindow():
 				idParameter = row[0]
 				timeStampStrVar = StringVar(value=str(row[1]))
 				noteStrVar = StringVar(value=str(row[2]))
-				insideFrame = Frame(windowFrame,highlightbackground="green", highlightcolor="green", highlightthickness=1)
+				insideFrame = Frame(windowFrame,highlightbackground="green", highlightcolor="green", highlightthickness=1) #for individual frame
 				idLabel = Label(insideFrame, textvariable=idStrVar,font=("Verdana",18))
 				idLabel.pack()
 				timeStampLabel = Label(insideFrame, textvariable=timeStampStrVar, font=("Verdana",18))
@@ -43,7 +43,7 @@ class ViewWindow():
 				noteLabel = Label(insideFrame, wraplength=600, textvariable=noteStrVar, font=("Verdana",18))
 				noteLabel.pack()
 				Label(insideFrame,text="\n").pack()
-				deleteButton = ttk.Button(insideFrame,text="Delete", command = lambda idParameter = idParameter : self.deleteNote(idParameter))
+				deleteButton = ttk.Button(insideFrame,text="Delete", command = lambda idParameter = idParameter, insideFrame = insideFrame : self.deleteNote(idParameter,insideFrame))
 				deleteButton.pack()
 				Label(insideFrame,text="\n").pack()
 				insideFrame.pack(fill=X)
@@ -63,7 +63,8 @@ class ViewWindow():
 			print("connection closed")
 
 
-	def deleteNote(self,idNote):
+	def deleteNote(self,idNote,insideFrame):
+		self.insideFrame = insideFrame
 		try:
 			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
 			cursor = conn.cursor()
@@ -71,6 +72,7 @@ class ViewWindow():
 			cursor.execute("DELETE FROM notes WHERE (id=%s)" %(idNote))
 			conn.commit()
 			print("Note Deleted")
+			insideFrame.destroy()
 
 		except mysql.connector.Error as error:
 			conn.rollback()
