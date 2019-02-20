@@ -32,6 +32,7 @@ class ViewWindow():
 			for row in results:
 				print(str(row[0])+"	"+str(row[1])+"	"+str(row[2]))
 				idStrVar = StringVar(value=str(row[0]))
+				idParameter = row[0]
 				timeStampStrVar = StringVar(value=str(row[1]))
 				noteStrVar = StringVar(value=str(row[2]))
 				insideFrame = Frame(windowFrame,highlightbackground="green", highlightcolor="green", highlightthickness=1)
@@ -42,7 +43,7 @@ class ViewWindow():
 				noteLabel = Label(insideFrame, wraplength=600, textvariable=noteStrVar, font=("Verdana",18))
 				noteLabel.pack()
 				Label(insideFrame,text="\n").pack()
-				deleteButton = ttk.Button(insideFrame,text="Delete")
+				deleteButton = ttk.Button(insideFrame,text="Delete", command = lambda idParameter = idParameter : self.deleteNote(idParameter))
 				deleteButton.pack()
 				Label(insideFrame,text="\n").pack()
 				insideFrame.pack(fill=X)
@@ -62,7 +63,25 @@ class ViewWindow():
 			print("connection closed")
 
 
-	#def deleteNote(self,):
+	def deleteNote(self,idNote):
+		try:
+			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
+			cursor = conn.cursor()
+			print("Going to delete %s" %(idNote))
+			cursor.execute("DELETE FROM notes WHERE (id=%s)" %(idNote))
+			conn.commit()
+			print("Note Deleted")
+
+		except mysql.connector.Error as error:
+			conn.rollback()
+			print("Error, cannot delete")
+
+		finally:
+			cursor.close()
+			conn.close()
+			print("connection closed")
+
+
 
 
 
