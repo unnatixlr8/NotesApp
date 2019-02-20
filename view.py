@@ -34,13 +34,18 @@ class ViewWindow():
 				idStrVar = StringVar(value=str(row[0]))
 				timeStampStrVar = StringVar(value=str(row[1]))
 				noteStrVar = StringVar(value=str(row[2]))
-				idLabel = Label(windowFrame, textvariable=idStrVar,font=("Verdana",18))
+				insideFrame = Frame(windowFrame,highlightbackground="green", highlightcolor="green", highlightthickness=1)
+				idLabel = Label(insideFrame, textvariable=idStrVar,font=("Verdana",18))
 				idLabel.pack()
-				timeStampLabel = Label(windowFrame, textvariable=timeStampStrVar, font=("Verdana",18))
+				timeStampLabel = Label(insideFrame, textvariable=timeStampStrVar, font=("Verdana",18))
 				timeStampLabel.pack()
-				noteLabel = Label(windowFrame, wraplength=600, textvariable=noteStrVar, font=("Verdana",18))
+				noteLabel = Label(insideFrame, wraplength=600, textvariable=noteStrVar, font=("Verdana",18))
 				noteLabel.pack()
-				Label(windowFrame,text="\n").pack()
+				Label(insideFrame,text="\n").pack()
+				deleteButton = ttk.Button(insideFrame,text="Delete")
+				deleteButton.pack()
+				Label(insideFrame,text="\n").pack()
+				insideFrame.pack(fill=X)
 
 			master.update()
 			canvas.config(scrollregion=canvas.bbox("all"))
@@ -55,6 +60,10 @@ class ViewWindow():
 			cursor.close()
 			conn.close()
 			print("connection closed")
+
+
+	#def deleteNote(self,):
+
 
 
 root = Tk()
