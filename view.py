@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk 
 from tkinter import messagebox
+import sys
+import os
 import mysql.connector
 from mysql.connector import Error
 
@@ -8,9 +10,10 @@ from mysql.connector import Error
 class ViewWindow():
 	def __init__(self,master):
 		self.master = master
-		master.geometry("800x600")
+		master.geometry("1366x768")
 		master.title("View Notes")
 		self.noteBox(master)
+
 
 	def noteBox(self,master):
 		self.master = master
@@ -19,8 +22,12 @@ class ViewWindow():
 		scrollBar.config(command=canvas.yview)
 		scrollBar.pack(side=RIGHT, fill=Y)
 		windowFrame = Frame(canvas)
-		canvas.pack(side="left", fill="both", expand=True) 
+		canvas.pack(side="left", fill="both", expand=True)
+		rightFrame = Frame(canvas)
+		
 		canvas.create_window(0,0,window=windowFrame, anchor='nw')
+		rightFrame.pack(side="right")
+		self.addWindow(rightFrame)
 
 		try:
 			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
@@ -44,7 +51,9 @@ class ViewWindow():
 				noteLabel.pack()
 				Label(insideFrame,text="\n").pack()
 				deleteButton = ttk.Button(insideFrame,text="Delete", command = lambda idParameter = idParameter, insideFrame = insideFrame : self.deleteNote(idParameter,insideFrame))
-				deleteButton.pack()
+				deleteButton.pack(side=LEFT, padx=3)
+				updateButton = ttk.Button(insideFrame,text="Update")
+				updateButton.pack(side=LEFT, padx=3)
 				Label(insideFrame,text="\n").pack()
 				insideFrame.pack(fill=X)
 
@@ -84,10 +93,52 @@ class ViewWindow():
 			print("connection closed")
 
 
+	#def updateNote(self,idNote)
+	def restart_program(self):
+		python = sys.executable
+		os.execl(python,python, * sys.argv)
 
 
+	def addWindow(self,master):
+		self.master = master
+		titleLabel = Label(master, text="Add New Note", font=("Verdana", 24))
+		titleLabel.pack(pady=3)
+		global textBox
+		textBox = Text(master,highlightbackground="Black",font=("Verdana",14))
+		textBox.pack(padx=3)
+		addButton = ttk.Button(master, text="Save Note", command=self.uploadNote)
+		addButton.pack(pady=5,ipadx=10,ipady=5)
 
-root = Tk()
-rootObj = ViewWindow(root)
-root.mainloop()
+	def uploadNote(self):
+		noteToPost = textBox.get(1.0, "end-1c")
+		try:
+			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
+			cursor = conn.cursor()
+			print("database connected")
+			cursor.execute("INSERT INTO notes(note) VALUES('%s')" %(noteToPost))
+			conn.commit()
+			print("Note Added")
+			messagebox.showinfo("Success", "Your note has been posted")
+			python = sys.executable
+			os.execl(python,python, * sys.argv)
+
+
+		except mysql.connector.Error as error:
+			conn.rollback()
+			print("Error")
+			messagebox.showerror("Error", "You note has NOT been posted")
+
+		finally:
+			cursor.close()
+			conn.close()
+			print("connection closed")
+
+def main():
+	root = Tk()
+	root.resizable(False, False)
+	rootObj = ViewWindow(root)
+	root.mainloop()
+
+if __name__ == "__main__":
+	main()
 	
