@@ -4,12 +4,14 @@ from tkinter import messagebox
 import mysql.connector
 from mysql.connector import Error
 
+
 class NotesWindow():
 	def __init__(self,master):
 		self.master = master
 		master.geometry("800x600") #Width x Height
 		master.title("Add Note")
 		self.addWindow(master)
+
 
 	def addWindow(self,master):
 		self.master = master
@@ -20,6 +22,7 @@ class NotesWindow():
 		textBox.pack()
 		addButton = ttk.Button(master, text="Save Note", command=self.uploadNote)
 		addButton.pack(pady=5,ipadx=10,ipady=5)
+
 
 	def uploadNote(self):
 		noteToPost = textBox.get(1.0, "end-1c")
@@ -43,6 +46,10 @@ class NotesWindow():
 			print("connection closed")
 
 
-root = Tk()
-rootObj = NotesWindow(root)
-root.mainloop()
+def main():
+	root = Tk()
+	rootObj = NotesWindow(root)
+	root.mainloop()
+
+if __name__ == "__main__":
+	main()
