@@ -42,6 +42,7 @@ class ViewWindow():
 				idParameter = row[0]
 				timeStampStrVar = StringVar(value=str(row[1]))
 				noteStrVar = StringVar(value=str(row[2]))
+				noteParameter = row[2]
 				insideFrame = Frame(windowFrame,highlightbackground="green", highlightcolor="green", highlightthickness=1) #for individual frame
 				idLabel = Label(insideFrame, textvariable=idStrVar,font=("Verdana",18))
 				idLabel.pack()
@@ -52,7 +53,7 @@ class ViewWindow():
 				Label(insideFrame,text="\n").pack()
 				deleteButton = ttk.Button(insideFrame,text="Delete", command = lambda idParameter = idParameter, insideFrame = insideFrame : self.deleteNote(idParameter,insideFrame))
 				deleteButton.pack(side=LEFT, padx=3)
-				updateButton = ttk.Button(insideFrame,text="Update")
+				updateButton = ttk.Button(insideFrame,text="Update", command = lambda idParameter = idParameter, noteParameter = noteParameter : self.updateNote(idParameter, noteParameter, self.master))
 				updateButton.pack(side=LEFT, padx=3)
 				Label(insideFrame,text="\n").pack()
 				insideFrame.pack(fill=X)
@@ -93,7 +94,39 @@ class ViewWindow():
 			print("connection closed")
 
 
-	#def updateNote(self,idNote)
+	def updateNote(self,idNote, noteParameter, master):
+		updateWindow = Toplevel(master,height=500, width=500)
+		updateWindow.title("Update Note")
+		self.updateBox = Text(updateWindow,highlightbackground="Black",font=("Verdana",14))
+		self.updateBox.insert('1.0', noteParameter)
+		self.updateBox.pack(padx=3,pady=3)
+		submitButton = ttk.Button(updateWindow,text="Update Note", command=lambda : self.saveUpdateNote(idNote))
+		submitButton.pack(pady=3)
+
+
+	def saveUpdateNote(self,idNote):
+		updateNotePost = self.updateBox.get(1.0,"end-1c")
+		try:
+			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
+			cursor = conn.cursor()
+			print("database connected")
+			cursor.execute("UPDATE notes SET note = '%s' WHERE id = '%s'" %(updateNotePost,idNote))
+			conn.commit()
+			messagebox.showinfo("Success", "Your note has been updated")
+			python = sys.executable
+			os.execl(python,python, * sys.argv)
+
+		except mysql.connector.Error as error:
+			conn.rollback()
+			print("Error")
+			messagebox.showerror("Error", "Your note has NOT been updated")
+
+		finally:
+			cursor.close()
+			conn.close()
+			print("connection closed")
+
+
 	def restart_program(self):
 		python = sys.executable
 		os.execl(python,python, * sys.argv)
@@ -126,7 +159,7 @@ class ViewWindow():
 		except mysql.connector.Error as error:
 			conn.rollback()
 			print("Error")
-			messagebox.showerror("Error", "You note has NOT been posted")
+			messagebox.showerror("Error", "Your note has NOT been posted")
 
 		finally:
 			cursor.close()
