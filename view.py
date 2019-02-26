@@ -30,7 +30,7 @@ class ViewWindow():
 		self.addWindow(rightFrame)
 
 		try:
-			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
+			conn = mysql.connector.connect(user='root', password='nirmmaalyam',host='127.0.0.1',database='python')
 			cursor = conn.cursor()
 			print("Database connected")
 			cursor.execute("SELECT * from notes")
@@ -75,7 +75,7 @@ class ViewWindow():
 	def deleteNote(self,idNote,insideFrame):
 		self.insideFrame = insideFrame
 		try:
-			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
+			conn = mysql.connector.connect(user='root', password='nirmmaalyam',host='127.0.0.1',database='python')
 			cursor = conn.cursor()
 			print("Going to delete %s" %(idNote))
 			cursor.execute("DELETE FROM notes WHERE (id=%s)" %(idNote))
@@ -112,7 +112,7 @@ class ViewWindow():
 	def uploadNote(self):
 		noteToPost = textBox.get(1.0, "end-1c")
 		try:
-			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
+			conn = mysql.connector.connect(user='root', password='nirmmaalyam',host='127.0.0.1',database='python')
 			cursor = conn.cursor()
 			print("database connected")
 			cursor.execute("INSERT INTO notes(note) VALUES('%s')" %(noteToPost))
