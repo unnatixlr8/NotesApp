@@ -16,6 +16,8 @@ CREATE TABLE notes (id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
 created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 note TEXT);
 ```
+Make table **users**
 
-
-
+```sql
+CREATE TABLE `python`.`users` ( `uname` VARCHAR(15) NOT NULL , `upass` VARCHAR(15) NOT NULL , PRIMARY KEY (`uname`));
+```
