@@ -107,7 +107,7 @@ class ViewWindow():
 	def saveUpdateNote(self,idNote):
 		updateNotePost = self.updateBox.get(1.0,"end-1c")
 		try:
-			conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
+			conn = mysql.connector.connect(user='root', password='nirmmaalyam',host='127.0.0.1',database='python')
 			cursor = conn.cursor()
 			print("database connected")
 			cursor.execute("UPDATE notes SET note = '%s' WHERE id = '%s'" %(updateNotePost,idNote))
