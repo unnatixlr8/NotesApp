@@ -6,7 +6,6 @@ import os
 import mysql.connector
 from mysql.connector import Error
 
-x=False
 
 class Main():
     def __init__(self,parent):
@@ -49,11 +48,28 @@ class Main():
     def login(self):
         name = self.loginName.get()
         password = self.loginPass.get()
-        self.parent.destroy()
+        
         #Code for linking to view window
-
-
-
+        try:
+            conn = mysql.connector.connect(user='root',password='nirmmaalyam',host='127.0.0.1',database='python')
+            cursor = conn.cursor()
+            print("database connected")
+            cursor.execute("SELECT * FROM users WHERE uname='%s' and upass='%s'" % (name,password) )
+            row = cursor.fetchone()
+            print("Login Attempt")
+            if(row == None):
+                messagebox.showinfo("Error", "User Log in Failed !!!")
+            else:
+                messagebox.showinfo("Success", "User Logged in Sucessfully !")
+        except mysql.connector.Error as error:
+            conn.rollback()
+            print("Error")
+            messagebox.showerror("Error", "Connection to database Failed !!!")
+        finally:
+            cursor.close()
+            conn.close()
+            print("connection closed")
+        self.parent.destroy() 
 
     def signup(self):
         self.page.set("Sign Up")
@@ -249,11 +265,8 @@ class ViewWindow():
 def main():
 	root = Tk()
 	root.resizable(False, False)
-	Obj1=Main(root)
-	if x == True :
-	root1 = Tk()
-	rootObj = ViewWindow(root1)
-	root1.mainloop()
+	Main(root)
+	root.mainloop()
 
 if __name__ == "__main__":
 	main()
