@@ -1,5 +1,4 @@
 from tkinter import *
-
 from tkinter import messagebox
 import mysql.connector
 from mysql.connector import Error
@@ -45,7 +44,26 @@ class Main():
     def login(self):
         name = self.loginName.get()
         password = self.loginPass.get()
-        #Code for linking to view window
+        
+        try:
+            conn = mysql.connector.connect(user='root',password='nirmmaalyam',host='127.0.0.1',database='python')
+            cursor = conn.cursor()
+            print("database connected")
+            cursor.execute("SELECT * FROM users WHERE uname='%s' and upass='%s'" % (name,password) )
+            row = cursor.fetchone()
+            print("Login Attempt")
+            if(row == None):
+                messagebox.showinfo("Error", "User Log in Failed !!!")
+            else:
+                messagebox.showinfo("Success", "User Logged in Sucessfully !")
+        except mysql.connector.Error as error:
+            conn.rollback()
+            print("Error")
+            messagebox.showerror("Error", "Connection to database Failed !!!")
+        finally:
+            cursor.close()
+            conn.close()
+            print("connection closed")
 
 
 
