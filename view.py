@@ -59,17 +59,21 @@ class Main():
             print("Login Attempt")
             if(row == None):
                 messagebox.showinfo("Error", "User Log in Failed !!!")
+                self.parent.destroy()
             else:
                 messagebox.showinfo("Success", "User Logged in Sucessfully !")
+                self.parent.destroy() 
+
         except mysql.connector.Error as error:
             conn.rollback()
             print("Error")
             messagebox.showerror("Error", "Connection to database Failed !!!")
+            self.parent.destroy() 
         finally:
             cursor.close()
             conn.close()
             print("connection closed")
-        self.parent.destroy() 
+        
 
     def signup(self):
         self.page.set("Sign Up")
@@ -244,7 +248,7 @@ class ViewWindow():
 			conn = mysql.connector.connect(user='root', password='nirmmaalyam',host='127.0.0.1',database='python')
 			cursor = conn.cursor()
 			print("database connected")
-			cursor.execute("INSERT INTO notes(note) VALUES('%s')" %(noteToPost))
+			cursor.execute("INSERT INTO notes(uname,note) VALUES('%s','%s')" %("aaa",noteToPost))
 			conn.commit()
 			print("Note Added")
 			messagebox.showinfo("Success", "Your note has been posted")
@@ -264,8 +268,8 @@ class ViewWindow():
 
 def main():
 	root = Tk()
-	root.resizable(False, False)
-	Main(root)
+	#root.resizable(False, False)
+	ViewWindow(root)
 	root.mainloop()
 
 if __name__ == "__main__":
