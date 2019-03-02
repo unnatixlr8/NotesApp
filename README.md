@@ -6,6 +6,7 @@ install python 3.
 install venv and activate it.
 
 `pip install mysql-connector-python`
+
 `pip install tkcalendar`
 
 Make a database with a name **python** and password *pythondb*
