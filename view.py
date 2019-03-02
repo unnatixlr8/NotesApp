@@ -6,6 +6,7 @@ import os
 import mysql.connector
 from mysql.connector import Error
 import json, urllib.request, urllib.parse, ssl
+from tkcalendar import Calendar, DateEntry
 
 global na
 class Main():
@@ -137,7 +138,7 @@ class Main():
         canvas.pack(side="left", fill="both", expand=True)
         rightFrame = Frame(canvas)
         canvas.create_window(0,0,window=windowFrame, anchor='nw')
-        rightFrame.pack(side="right")
+        #rightFrame.pack(side="right")
         self.addWindow(rightFrame)
         try:
             conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
@@ -230,15 +231,17 @@ class Main():
         python = sys.executable
         os.execl(python,python, * sys.argv)
 
-    def addWindow(self,master):
-        self.master = master
-        titleLabel = Label(master, text="Add New Note", font=("Verdana", 24))
+    def addWindow(self,addFrame):
+        self.addFrame = addFrame
+        titleLabel = Label(addFrame, text="Add New Note", font=("Verdana", 24))
         titleLabel.pack(pady=3)
         global textBox
-        textBox = Text(master,highlightbackground="Black",font=("Verdana",14))
+        textBox = Text(addFrame,highlightbackground="Black",font=("Verdana",14),width=50, height=10)
         textBox.pack(padx=3)
-        addButton = ttk.Button(master, text="Save Note", command=self.uploadNote)
+        addButton = ttk.Button(addFrame, text="Save Note", command=self.uploadNote)
         addButton.pack(pady=5,ipadx=10,ipady=5)
+        addFrame.pack(side=RIGHT, padx=3, pady=3)
+        self.calendarFrame(addFrame);
 
     def uploadNote(self):
         noteToPost = textBox.get(1.0, "end-1c")
@@ -287,6 +290,11 @@ class Main():
         f = urllib.request.urlopen(request, data, context=context)
         fr = f.read()
         return(fr)
+
+
+    def calendarFrame(self,calFrame):
+        cal = Calendar(calFrame, font="Verdana 14", locale='en_IN')
+        cal.pack(fill="both", expand=True, side=RIGHT, padx=3)
 
 
 def main():
