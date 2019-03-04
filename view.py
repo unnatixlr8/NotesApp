@@ -20,6 +20,30 @@ class Main():
         self.signupName = StringVar()
         self.signupPass = StringVar()
         self.sts = StringVar()
+        try:
+            conn = mysql.connector.connect(user='root',password='pythondb',host='127.0.0.1')
+            cursor = conn.cursor()
+            print("database connected")
+            cursor.execute("CREATE DATABASE IF NOT EXISTS python")
+            conn.commit()
+            print("Database created")
+            cursor.close()
+            conn.close()
+            conn = mysql.connector.connect(user='root',password='pythondb',host='127.0.0.1',database='python')
+            cursor = conn.cursor()
+            cursor.execute("CREATE TABLE IF NOT EXISTS `python`.`users` ( `uname` VARCHAR(15) NOT NULL , `upass` VARCHAR(15) NOT NULL , PRIMARY KEY (`uname`))")
+            cursor.execute("CREATE TABLE IF NOT EXISTS `python`.`notes` (id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,`uname` varchar(15) NOT NULL,created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,note TEXT,FOREIGN KEY (`uname`) REFERENCES `users` (`uname`))" )
+            conn.commit()
+            print("tables created")
+        except mysql.connector.Error as error:
+            conn.rollback()
+            print("Error")
+            messagebox.showerror("Error", "Connection to database Failed !!!")
+        finally:
+            cursor.close()
+            conn.close()
+            print("connection closed")
+
         self.createWidgets()
        # self.showLogin()
         self.ViewWindow(parent)
@@ -66,7 +90,8 @@ class Main():
             print("Login Attempt")
             if(row == None):
                 messagebox.showinfo("Error", "User Log in Failed !!!")
-                self.parent.destroy()
+                python = sys.executable
+                os.execl(python,python, * sys.argv)
             else:
                 messagebox.showinfo("Success", "User Logged in Sucessfully !")
 
@@ -164,8 +189,8 @@ class Main():
                 noteStrVar = StringVar(value=str(row[3]))
                 noteParameter = row[3]
                 insideFrame = Frame(windowFrame,highlightbackground="green", highlightcolor="green", highlightthickness=1) #for individual frame
-                idLabel = Label(insideFrame, textvariable=idStrVar,font=("Verdana",18))
-                idLabel.pack()
+                #idLabel = Label(insideFrame, textvariable=idStrVar,font=("Verdana",18))
+                #idLabel.pack()
                 timeStampLabel = Label(insideFrame, textvariable=timeStampStrVar, font=("Verdana",18))
                 timeStampLabel.pack()
                 noteLabel = Label(insideFrame,wraplength = 600, textvariable=noteStrVar, font=("Verdana",18))
