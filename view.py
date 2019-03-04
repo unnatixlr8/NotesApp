@@ -61,7 +61,7 @@ class Main():
             conn = mysql.connector.connect(user='root',password='pythondb',host='127.0.0.1',database='python')
             cursor = conn.cursor()
             print("database connected")
-            cursor.execute("SELECT * FROM users WHERE uname='%s' and upass='%s'" % (name,password) )
+            cursor.execute("SELECT * FROM users WHERE uname='%s' and upass='%s'" % (na,password) )
             row = cursor.fetchone()
             print("Login Attempt")
             if(row == None):
@@ -73,7 +73,7 @@ class Main():
                 self.loginFrame.destroy()
                 self.page.set("")
 
-                self.noteBox(self.parent,name)
+                self.noteBox(self.parent,na)
                 
 
         except mysql.connector.Error as error:
@@ -128,13 +128,22 @@ class Main():
         master.title("Notes")
         
 
-    def noteBox(self,master,name):
+    def refresh(self):
+        self.master.destroy()
+        self.master = Tk()
+        self.master.geometry("1366x768")
+        self.master.title("Notes")
+        self.master.resizable(False, False)
+        self.noteBox(self.master, na)
+
+    def noteBox(self,master,na):
         self.master = master
+        resetButton = ttk.Button(master, text="Refresh", command = self.refresh).pack()
         scrollBar = Scrollbar(master)
         canvas = Canvas(master,background = "#D2D2D2",yscrollcommand=scrollBar.set)
         scrollBar.config(command=canvas.yview)
         scrollBar.pack(side=RIGHT, fill=Y)
-        windowFrame = Frame(canvas)
+        windowFrame = Frame(canvas, width=500)
         canvas.pack(side="left", fill="both", expand=True)
         rightFrame = Frame(canvas)
         canvas.create_window(0,0,window=windowFrame, anchor='nw')
@@ -144,22 +153,22 @@ class Main():
             conn = mysql.connector.connect(user='root', password='pythondb',host='127.0.0.1',database='python')
             cursor = conn.cursor()
             print("Database connected")
-            cursor.execute("SELECT * from notes WHERE uname='%s'" % (name) )
+            cursor.execute("SELECT * from notes WHERE uname='%s'" % (na) )
             results = cursor.fetchall()
             print("Data fetched")
             for row in results:
-                print(str(row[0])+" "+str(row[3])+" "+str(row[2]))
+                print(str(row[0])+" "+str(row[2])+" "+str(row[3]))
                 idStrVar = StringVar(value=str(row[0]))
                 idParameter = row[0]
-                timeStampStrVar = StringVar(value=str(row[3]))
-                noteStrVar = StringVar(value=str(row[2]))
+                timeStampStrVar = StringVar(value=str(row[2]))
+                noteStrVar = StringVar(value=str(row[3]))
                 noteParameter = row[3]
                 insideFrame = Frame(windowFrame,highlightbackground="green", highlightcolor="green", highlightthickness=1) #for individual frame
                 idLabel = Label(insideFrame, textvariable=idStrVar,font=("Verdana",18))
                 idLabel.pack()
                 timeStampLabel = Label(insideFrame, textvariable=timeStampStrVar, font=("Verdana",18))
                 timeStampLabel.pack()
-                noteLabel = Label(insideFrame, wraplength=600, textvariable=noteStrVar, font=("Verdana",18))
+                noteLabel = Label(insideFrame,wraplength = 600, textvariable=noteStrVar, font=("Verdana",18))
                 noteLabel.pack()
                 Label(insideFrame,text="\n").pack()
                 deleteButton = ttk.Button(insideFrame,text="Delete", command = lambda idParameter = idParameter, insideFrame = insideFrame : self.deleteNote(idParameter,insideFrame))
@@ -217,8 +226,9 @@ class Main():
             cursor.execute("UPDATE notes SET note = '%s' WHERE id = '%s'" %(updateNotePost,idNote))
             conn.commit()
             messagebox.showinfo("Success", "Your note has been updated")
-            python = sys.executable
-            os.execl(python,python, * sys.argv)
+            #python = sys.executable
+            #os.execl(python,python, * sys.argv)
+            self.refresh()
         except mysql.connector.Error as error:
             conn.rollback()
             print("Error")
@@ -227,6 +237,7 @@ class Main():
             cursor.close()
             conn.close()
             print("connection closed")
+    
     def restart_program(self):
         python = sys.executable
         os.execl(python,python, * sys.argv)
@@ -253,8 +264,9 @@ class Main():
             conn.commit()
             print("Note Added")
             messagebox.showinfo("Success", "Your note has been posted")
-            python = sys.executable
-            os.execl(python,python, * sys.argv)
+            #python = sys.executable
+            #os.execl(python,python, * sys.argv)
+            self.refresh()
         except mysql.connector.Error as error:
             conn.rollback()
             print("Error")
